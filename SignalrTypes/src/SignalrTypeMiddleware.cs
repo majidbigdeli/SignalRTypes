@@ -1,20 +1,25 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SignalrTypes
+namespace Microsoft.AspNetCore.SignalRTypes
 {
     public class SignalrTypeMiddleware
     {
         readonly RequestDelegate _next;
         private readonly SignalrTypeOptions options;
 
+
         public SignalrTypeMiddleware(RequestDelegate next,
             SignalrTypeOptions options)
         {
             _next = next;
             this.options = options;
+
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -31,7 +36,7 @@ namespace SignalrTypes
                 var settings = new SignalrTypeGeneratorSettings();
                 var generator = new SignalrTypeGenerator(settings);
 
-                var document = await generator.GenerateForHubsAsync(options.Hubs);
+                var document = await generator.GenerateForHubsAsync(options.HubServices);
 
                 var json = document.ToJson();
 

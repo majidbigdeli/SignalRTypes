@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading.Channels;
 using System.Threading.Tasks;
 
-namespace SignalrTypes
+namespace Microsoft.AspNetCore.SignalRTypes
 {
     public class SignalrTypeGenerator
     {

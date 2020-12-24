@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using System;
 
-namespace SignalrTypes
+namespace Microsoft.AspNetCore.SignalRTypes
 {
     public static class SignalrTypeExtensions
     {

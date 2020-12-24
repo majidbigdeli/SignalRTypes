@@ -2,7 +2,7 @@
 using NJsonSchema.Generation;
 using System;
 
-namespace SignalrTypes
+namespace Microsoft.AspNetCore.SignalRTypes
 {
     public class SignalrTypeSchemaResolver : JsonSchemaResolver
     {

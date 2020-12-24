@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     public class SignalrTypeOptions
     {

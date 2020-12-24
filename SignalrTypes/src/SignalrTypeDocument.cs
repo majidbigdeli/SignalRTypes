@@ -6,7 +6,7 @@ using NJsonSchema.Converters;
 using System;
 using System.Collections.Generic;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     [JsonConverter(typeof(JsonReferenceConverter))]
     public class SignalrTypeDocument

@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     public class IgnoreEmptyStringsConverter : JsonConverter
     {

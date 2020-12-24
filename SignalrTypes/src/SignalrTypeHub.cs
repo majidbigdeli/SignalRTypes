@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     public class SignalrTypeHub
     {

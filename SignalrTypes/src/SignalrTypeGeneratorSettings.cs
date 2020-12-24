@@ -5,7 +5,7 @@ using NJsonSchema;
 using NJsonSchema.Generation;
 using System.Collections.Generic;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     public class SignalrTypeGeneratorSettings : JsonSchemaGeneratorSettings
     {

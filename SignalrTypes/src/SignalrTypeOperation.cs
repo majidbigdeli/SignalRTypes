@@ -4,7 +4,7 @@ using NJsonSchema;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     public class SignalrTypeOperation
     {

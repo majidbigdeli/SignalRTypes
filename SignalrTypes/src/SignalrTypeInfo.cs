@@ -3,7 +3,7 @@ using Newtonsoft.Json.Serialization;
 using NJsonSchema;
 using System.ComponentModel;
 
-namespace Microsoft.AspNetCore.SignalRTypes
+namespace Septa.AspNetCore.SignalRTypes
 {
     /// <summary>The web service description.</summary>
     public class SignalrTypeInfo : JsonExtensionObject

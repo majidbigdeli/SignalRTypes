@@ -1,9 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AssemblyName>Microsoft.AspNetCore.SignalRTypes</AssemblyName>
-    <RootNamespace>Microsoft.AspNetCore.SignalRTypes</RootNamespace>
+    <AssemblyName>Septa.AspNetCore.SignalRTypes</AssemblyName>
+    <RootNamespace>Septa.AspNetCore.SignalRTypes</RootNamespace>
+    <PackageProjectUrl>https://github.com/majidbigdeli/SignalRTypes</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/majidbigdeli/SignalRTypes</RepositoryUrl>
+    <Authors>majid bigdeli</Authors>
   </PropertyGroup>
 
   <ItemGroup>

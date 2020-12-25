@@ -37,8 +37,10 @@ namespace Septa.AspNetCore.SignalRTypes
 
                 var json = document.ToJson();
 
-                httpContext.Response.StatusCode = 200;
+                httpContext.Response.StatusCode = StatusCodes.Status200OK;
+                httpContext.Response.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 await httpContext.Response.WriteAsync(json, Encoding.UTF8);
+
 
                 return;
             }

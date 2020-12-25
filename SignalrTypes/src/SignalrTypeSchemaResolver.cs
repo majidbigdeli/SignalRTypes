@@ -26,6 +26,11 @@ namespace Septa.AspNetCore.SignalRTypes
             if (schema == RootObject)
                 throw new ArgumentException("The root schema cannot be appended.");
 
+            if (string.IsNullOrWhiteSpace(schema.Description))
+            {
+                schema.Description = null;
+            }
+
             if (!_document.Definitions.Values.Contains(schema))
             {
                 var typeName = _settings.TypeNameGenerator.Generate(schema, typeNameHint, _document.Definitions.Keys);

@@ -16,7 +16,6 @@ namespace Septa.AspNetCore.SignalRTypes
         {
             _next = next;
             this.options = options;
-
         }
 
         public async Task Invoke(HttpContext httpContext)
@@ -26,9 +25,6 @@ namespace Septa.AspNetCore.SignalRTypes
             var path = httpContext.Request.Path.Value;
             if (httpMethod == "GET" && Regex.IsMatch(path, $"^/?{Regex.Escape(options.RoutePath)}/?$", RegexOptions.IgnoreCase))
             {
-                //var indexUrl = httpContext.Request.GetEncodedUrl().TrimEnd('/') + "/index.html";
-
-                //  RespondWithRedirect(httpContext.Response, indexUrl);
 
                 var settings = new SignalrTypeGeneratorSettings();
                 var generator = new SignalrTypeGenerator(settings);
@@ -40,7 +36,6 @@ namespace Septa.AspNetCore.SignalRTypes
                 httpContext.Response.StatusCode = StatusCodes.Status200OK;
                 httpContext.Response.Headers.Add("Content-Type", "application/json; charset=utf-8");
                 await httpContext.Response.WriteAsync(json, Encoding.UTF8);
-
 
                 return;
             }

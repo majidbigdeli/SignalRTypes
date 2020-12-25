@@ -43,7 +43,7 @@ namespace Example
 
             app.UseSignalrType(x =>
             {
-                x.RoutePath = "/api/signalRTypes/getSignalrType";
+                x.RoutePath = "/api/signalRTypes/getSignalrType.json";
                 x.HubServices = new Dictionary<string, Type>
                 {
                     {

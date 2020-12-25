@@ -11,6 +11,7 @@ namespace Septa.AspNetCore.SignalRTypes
     [JsonConverter(typeof(JsonReferenceConverter))]
     public class SignalrTypeDocument
     {
+
         private static Lazy<JsonSerializerSettings> _serializerSettings = new Lazy<JsonSerializerSettings>(() => new JsonSerializerSettings
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver(),

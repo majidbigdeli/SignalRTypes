@@ -1,21 +1,29 @@
-﻿using Example.Hubs.Clients;
-using Microsoft.AspNetCore.SignalR;
-using System;
+using Example.Hubs.Clients;
+using Example.ViewModel;
 using System.Threading.Tasks;
 
 namespace Example.Hubs
 {
-    public class ChatHub : Hub<IChatClient>
+    public class ChatHub : AppHubBase<IChatClient> , IHuB
     {
-        public async override Task OnConnectedAsync()
+        public async Task StartWorkAsync(StartWorkVm message)
         {
-            await base.OnConnectedAsync();
+            await Clients.All.StartWorkAsync(message);
+        }
+        public async Task StopWork(StopWorkVm message)
+        {
+            await Clients.All.StopWorkAsync(message);
         }
 
-        public async override Task OnDisconnectedAsync(Exception exception)
+        public async Task StopWork2(string message)
         {
-
-            await base.OnDisconnectedAsync(exception);
+            await Clients.All.StopWorkAsync(new StopWorkVm());
         }
     }
+
+    public interface IHuB
+    {
+
+    }
+
 }

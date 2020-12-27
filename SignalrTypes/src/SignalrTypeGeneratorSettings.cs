@@ -1,28 +1,16 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 using NJsonSchema;
 using NJsonSchema.Generation;
-using System.Collections.Generic;
 
 namespace Septa.AspNetCore.SignalRTypes
 {
     public class SignalrTypeGeneratorSettings : JsonSchemaGeneratorSettings
     {
 
-        public SignalrTypeGeneratorSettings()
+        public SignalrTypeGeneratorSettings(JsonSerializerSettings jsonSerializerSettings)
         {
-            SerializerSettings = new JsonSerializerSettings()
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore,
-                Converters = new List<JsonConverter> { new IgnoreEmptyStringsConverter(), new StringEnumConverter() }
-            };
-
+            SerializerSettings = jsonSerializerSettings;
             SchemaType = SchemaType.OpenApi3;
-
-
         }
     }
 

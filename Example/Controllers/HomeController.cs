@@ -10,23 +10,35 @@ namespace Example.Controllers
     public class HomeController : ControllerBase
     {
 
-        private readonly IChatHubService _chatHubService;
+        private readonly IChatService _chatService;
 
-        public HomeController(IChatHubService chatHubService)
+        public HomeController(IChatService chatService)
         {
-            _chatHubService = chatHubService;
+            _chatService = chatService;
         }
 
-        [HttpGet]
-        public async Task Get()
+        [HttpGet("start")]
+        public async Task<String> Start()
         {
-            await _chatHubService.StartWorkAsync(new ViewModel.StartWorkVm()
+            await _chatService.StartWorkAsync(new ViewModel.StartWorkVm()
             {
                 BirthDate = DateTime.Now,
                 FirstName = "Majid",
                 LastName = "Bigdeli",
                 JobType = Enums.JobType.Manager
             });
+            return "started";
+
+        }
+        [HttpGet("stop")]
+        public async Task Stop()
+        {
+            // await _chatService.StopWork(new ViewModel.StopWorkVm()
+            // {
+            //     Date = DateTime.Now,
+            //     Description = "Majid"
+            // });
+            return ;
 
         }
     }

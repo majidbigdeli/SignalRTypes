@@ -7,7 +7,6 @@ namespace Septa.AspNetCore.SignalRTypes
     public enum SignalrTypeOperationType
     {
         Sync,
-
         Observable
     }
 

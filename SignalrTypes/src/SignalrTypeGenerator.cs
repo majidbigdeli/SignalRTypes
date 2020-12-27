@@ -20,7 +20,7 @@ namespace Septa.AspNetCore.SignalRTypes
             _settings = settings;
         }
 
-        public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs)
+        public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs, ISignalRTypesBuilder signalRTypesBuilder)
         {
             var document = new SignalrTypeDocument();
             return await GenerateForHubsAsync(hubs, document);
@@ -28,6 +28,7 @@ namespace Septa.AspNetCore.SignalRTypes
 
         public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs, SignalrTypeDocument template)
         {
+
             var document = template;
             var resolver = new SignalrTypeSchemaResolver(document, _settings);
             var generator = new JsonSchemaGenerator(_settings);
@@ -52,99 +53,70 @@ namespace Septa.AspNetCore.SignalRTypes
                 }
 
 
-//                var signalRCallBackAttribute = type.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(SignalRCallBackAttribute));
+                //  handle with service this comment
 
+                //var ctors = type.GetConstructors();
 
-                var ctors = type.GetConstructors();
-
-                if (ctors != null && ctors.Length > 0)
-                {
-                    var allTypes = ctors.Select(
-                        x => x.GetParameters()
-                        ?.Where(
-                            z => z.ParameterType.IsGenericType && z.ParameterType.GetGenericTypeDefinition() == typeof(IHubContext<,>))
-                        ).Select(e => e.Select(s => s.ParameterType.GetGenericArguments()[1]))
-                        ?.ToList();
-
-                    foreach (var itemTypes in allTypes)
-                    {
-                        foreach (var itemType in itemTypes)
-                        {
-                            foreach (var callbackMethod in GetOperationMethods(itemType))
-                            {
-                                var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
-
-                                var methodName = callbackMethod.Name;
-                                var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
-
-                                if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
-                                {
-                                    var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
-                                    if (!string.IsNullOrEmpty(argName))
-                                    {
-                                        methodName = argName;
-                                    }
-                                }
-
-                                hub.Callbacks[methodName] = callback;
-                            }
-
-                        }
-                    }
-
-                }
-
-                //var t = fd.First().GetParameters();
-
-                //foreach (var param in t)
+                //if (ctors != null && ctors.Length > 0)
                 //{
-                //    if (param.ParameterType.IsGenericType && param.ParameterType.GetGenericTypeDefinition() == typeof(IHubContext<,>))
+                //    var allTypes = ctors.Select(
+                //        x => x.GetParameters()
+                //        ?.Where(
+                //            z => z.ParameterType.IsGenericType && z.ParameterType.GetGenericTypeDefinition() == typeof(IHubContext<,>))
+                //        ).Select(e => e.Select(s => s.ParameterType.GetGenericArguments()[1]))
+                //        ?.ToList();
+
+                //    foreach (var itemTypes in allTypes)
                 //    {
-                //        Console.WriteLine(string.Format(
-                //            "Param {0} is named {1} and is of type {2}",
-                //            param.Position, param.Name, param.ParameterType));
-                //    }
-
-                //}
-
-                //var g = t.First();
-                //var iii = g.GetType().GetGenericArguments();
-                //   var iSignalRType = hubInterfaces.FirstOrDefault(x => x.GetType() == typeof(ISignalRCallBack<>));
-
-                //if (signalRCallBackAttribute != null)
-                //{
-                //    //var baseTypeGenericArguments = type.BaseType.GetGenericArguments();
-
-
-                //    // if (baseTypeGenericArguments.Length == 1)
-                //    // {
-                //   // var f = signalRCallBackAttribute.ConstructorArguments[0];
-                //    var callbackType = f.GetType(); ;  //hubInterfaces.GetGenericArguments().First(); //baseTypeGenericArguments[0];
-                //    foreach (var callbackMethod in GetOperationMethods(callbackType))
-                //    {
-                //        var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
-
-                //        var methodName = callbackMethod.Name;
-                //        var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
-
-                //        if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
+                //        foreach (var itemType in itemTypes)
                 //        {
-                //            var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
-                //            if (!string.IsNullOrEmpty(argName))
+                //            foreach (var callbackMethod in GetOperationMethods(itemType))
                 //            {
-                //                methodName = argName;
-                //            }
-                //        }
+                //                var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
 
-                //        hub.Callbacks[methodName] = callback;
+                //                var methodName = callbackMethod.Name;
+                //                var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
+
+                //                if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
+                //                {
+                //                    var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
+                //                    if (!string.IsNullOrEmpty(argName))
+                //                    {
+                //                        methodName = argName;
+                //                    }
+                //                }
+
+                //                hub.Callbacks[methodName] = callback;
+                //            }
+
+                //        }
                 //    }
-                //    //}
+
                 //}
 
+                var baseTypeGenericArguments = type.BaseType.GetGenericArguments();
+                if (baseTypeGenericArguments.Length == 1)
+                {
+                    var callbackType = baseTypeGenericArguments[0];
+                    foreach (var callbackMethod in GetOperationMethods(callbackType))
+                    {
+                        var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
 
+                        var methodName = callbackMethod.Name;
+                        var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
 
+                        if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
+                        {
+                            var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
+                            if (!string.IsNullOrEmpty(argName))
+                            {
+                                methodName = argName;
+                            }
+                        }
 
-
+                        hub.Callbacks[methodName] = callback;
+                    }
+                }
 
                 document.Hubs[h.Key] = hub;
             }

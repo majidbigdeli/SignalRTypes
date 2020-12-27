@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,26 +13,31 @@ namespace Septa.AspNetCore.SignalRTypes
         readonly RequestDelegate _next;
         private readonly SignalrTypeOptions options;
 
+        private readonly JsonSerializerSettings _jsonSerializerSettings;
+
 
         public SignalrTypeMiddleware(RequestDelegate next,
+            IOptions<NewtonsoftJsonHubProtocolOptions> jsonOptions,
             SignalrTypeOptions options)
         {
             _next = next;
+            _jsonSerializerSettings = jsonOptions.Value.PayloadSerializerSettings;
             this.options = options;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke(HttpContext httpContext, ISignalRTypesBuilder signalRTypesBuilder)
         {
 
             var httpMethod = httpContext.Request.Method;
+
             var path = httpContext.Request.Path.Value;
             if (httpMethod == "GET" && Regex.IsMatch(path, $"^/?{Regex.Escape(options.RoutePath)}/?$", RegexOptions.IgnoreCase))
             {
 
-                var settings = new SignalrTypeGeneratorSettings();
+                var settings = new SignalrTypeGeneratorSettings(_jsonSerializerSettings);
                 var generator = new SignalrTypeGenerator(settings);
 
-                var document = await generator.GenerateForHubsAsync(options.HubServices);
+                var document = await generator.GenerateForHubsAsync(options.Hubs, signalRTypesBuilder);
 
                 var json = document.ToJson();
 

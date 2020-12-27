@@ -9,10 +9,10 @@ namespace Example.Hubs.Clients
         [HubMethodName("hello")]
         Task Hello();
 
-        [HubMethodName("start-work")]
+        [HubMethodName("startwork")]
         Task StartWorkAsync(StartWorkVm message);
 
-        [HubMethodName("stop-work")]
+        [HubMethodName("stopwork")]
         Task StopWorkAsync(StopWorkVm message);
 
     }

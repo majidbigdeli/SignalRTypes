@@ -147,12 +147,6 @@ namespace Septa.AspNetCore.SignalRTypes
         }
     }
 
-
-
-
-
-
-
     public class SignalrTypesCallBack
     {
         public string Description { get; set; }
@@ -162,6 +156,7 @@ namespace Septa.AspNetCore.SignalRTypes
 
     public class SignalrTypesCallBackParameter
     {
+        public string Name { get; set; }
         public string Description { get; set; }
         public Type Type { get; set; }
     }

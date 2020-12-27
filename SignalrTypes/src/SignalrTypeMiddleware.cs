@@ -37,7 +37,7 @@ namespace Septa.AspNetCore.SignalRTypes
                 var settings = new SignalrTypeGeneratorSettings(_jsonSerializerSettings);
                 var generator = new SignalrTypeGenerator(settings);
 
-                var document = await generator.GenerateForHubsAsync(options.Hubs, signalRTypesBuilder);
+                var document = await generator.GenerateForHubsAsync(signalRTypesBuilder);
 
                 var json = document.ToJson();
 

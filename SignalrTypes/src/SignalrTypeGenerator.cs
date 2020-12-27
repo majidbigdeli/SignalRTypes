@@ -20,13 +20,25 @@ namespace Septa.AspNetCore.SignalRTypes
             _settings = settings;
         }
 
-        public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs, ISignalRTypesBuilder signalRTypesBuilder)
+        public async Task<SignalrTypeDocument> GenerateForHubsAsync(ISignalRTypesBuilder signalRTypesBuilder)
         {
+            Dictionary<string, Type> hubs = new Dictionary<string, Type>();
+
+            var type = typeof(Hub);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p) && !p.IsAbstract).ToList();
+
+            foreach (var item in types)
+            {
+                hubs.Add(item.Name, item);
+            }
+
             var document = new SignalrTypeDocument();
-            return await GenerateForHubsAsync(hubs, document);
+            return await GenerateForHubsAsync(hubs, document, signalRTypesBuilder);
         }
 
-        public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs, SignalrTypeDocument template)
+        public async Task<SignalrTypeDocument> GenerateForHubsAsync(IReadOnlyDictionary<string, Type> hubs, SignalrTypeDocument template, ISignalRTypesBuilder signalRTypesBuilder)
         {
 
             var document = template;
@@ -94,29 +106,41 @@ namespace Septa.AspNetCore.SignalRTypes
 
                 //}
 
-                var baseTypeGenericArguments = type.BaseType.GetGenericArguments();
-                if (baseTypeGenericArguments.Length == 1)
+                //var baseTypeGenericArguments = type.BaseType.GetGenericArguments();
+                //if (baseTypeGenericArguments.Length == 1)
+                //{
+                //    var callbackType = baseTypeGenericArguments[0];
+                //    foreach (var callbackMethod in GetOperationMethods(callbackType))
+                //    {
+                //        var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
+
+                //        var methodName = callbackMethod.Name;
+                //        var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
+
+                //        if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
+                //        {
+                //            var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
+                //            if (!string.IsNullOrEmpty(argName))
+                //            {
+                //                methodName = argName;
+                //            }
+                //        }
+
+                //        hub.Callbacks[methodName] = callback;
+                //    }
+                //}
+
+
+                var callbacks = signalRTypesBuilder.GetCallBack();
+                if (callbacks.Count > 0)
                 {
-                    var callbackType = baseTypeGenericArguments[0];
-                    foreach (var callbackMethod in GetOperationMethods(callbackType))
+                    foreach (var callbackItem in callbacks)
                     {
-                        var callback = await GenerateOperationAsync(type, callbackMethod, generator, resolver, SignalrTypeOperationType.Sync);
-
-                        var methodName = callbackMethod.Name;
-                        var hubMethodName = callbackMethod.CustomAttributes.FirstOrDefault(x => x.AttributeType == typeof(HubMethodNameAttribute));
-
-                        if (hubMethodName != null && hubMethodName.ConstructorArguments.Count > 0)
-                        {
-                            var argName = hubMethodName.ConstructorArguments[0].Value.ToString();
-                            if (!string.IsNullOrEmpty(argName))
-                            {
-                                methodName = argName;
-                            }
-                        }
-
-                        hub.Callbacks[methodName] = callback;
+                        var callback = await GenerateOperationAsync(callbackItem, generator, resolver, SignalrTypeOperationType.Sync);
+                        hub.Callbacks[callbackItem.MethodName] = callback;
                     }
                 }
+
 
                 document.Hubs[h.Key] = hub;
             }
@@ -193,6 +217,47 @@ namespace Septa.AspNetCore.SignalRTypes
 
             return operation;
         }
+
+
+        private async Task<SignalrTypeOperation> GenerateOperationAsync(SignalrTypesCallBack method, JsonSchemaGenerator generator, SignalrTypeSchemaResolver resolver, SignalrTypeOperationType operationType)
+        {
+            var operation = new SignalrTypeOperation
+            {
+                Description = method.Description,
+                Type = operationType
+            };
+
+            foreach (var arg in method.SignalrTypesCallBackParameters)
+            {
+                var parameter = generator.GenerateWithReferenceAndNullability<SignalrTypeParameter>(
+                    arg.ParameterType.ToContextualType(), arg.ParameterType.ToContextualType().IsNullableType, resolver, (p, s) =>
+                    {
+                        p.Description = arg.Description;
+                    });
+
+                operation.Parameters[arg.Name] = parameter;
+            }
+
+            var returnType =
+                operationType == SignalrTypeOperationType.Observable
+                    ? method.ReturnType.GetGenericArguments().First()
+                : method.ReturnType == typeof(Task)
+                    ? null
+                : method.ReturnType.IsGenericType && method.ReturnType.BaseType == typeof(Task)
+                    ? method.ReturnType.GetGenericArguments().First()
+                    : method.ReturnType;
+
+            operation.ReturnType = returnType == null ? null : generator.GenerateWithReferenceAndNullability<JsonSchema>(
+                returnType.ToContextualType(), returnType.ToContextualType().IsNullableType, resolver, async (p, s) =>
+                {
+                    p.Description = method.ReturnType.GetXmlDocsSummary();
+                });
+
+            return operation;
+        }
+
+
+
     }
 
 }

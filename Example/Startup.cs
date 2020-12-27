@@ -74,12 +74,12 @@ namespace Example
             app.UseSignalrType(x =>
             {
                 x.RoutePath = "/api/signalRTypes/getSignalrType.json";
-                x.Hubs = new Dictionary<string, Type>
-                {
-                    {
-                        nameof(ChatHub), typeof(ChatHub)
-                    }
-                };
+                //x.Hubs = new Dictionary<string, Type>
+                //{
+                //    {
+                //        nameof(ChatHub), typeof(ChatHub)
+                //    }
+                //};
             });
             app.UseRouting();
             app.UseCors(DefaultCorsPolicyName);

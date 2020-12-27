@@ -108,8 +108,9 @@ namespace Septa.AspNetCore.SignalRTypes
                         {
                             parametersType.Add(new SignalrTypesCallBackParameter()
                             {
+                                Name = arg.Name,
                                 Description = arg.GetXmlDocs(),
-                                Type = arg.ParameterType
+                                ParameterType = arg.ParameterType
                             });
                         }
 
@@ -117,6 +118,7 @@ namespace Septa.AspNetCore.SignalRTypes
                         {
                             Description = callbackMethod.GetXmlDocsSummary(),
                             MethodName = methodName,
+                            ReturnType = callbackMethod.ReturnType,
                             SignalrTypesCallBackParameters = parametersType
                         });
 
@@ -151,6 +153,7 @@ namespace Septa.AspNetCore.SignalRTypes
     {
         public string Description { get; set; }
         public string MethodName { get; set; }
+        public Type ReturnType { get; set; }
         public List<SignalrTypesCallBackParameter> SignalrTypesCallBackParameters { get; set; }
     }
 
@@ -158,7 +161,7 @@ namespace Septa.AspNetCore.SignalRTypes
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public Type Type { get; set; }
+        public Type ParameterType { get; set; }
     }
 
 }

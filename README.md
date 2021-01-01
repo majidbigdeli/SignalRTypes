@@ -95,3 +95,10 @@ in Configure
 
 ```
 
+
+** You can also return your model without use generic Hub by implement ISignalRTypesBuilder **
+
+```
+
+            services.AddSignalRTypes<ISignalRTypesBuilder>();
+```

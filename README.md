@@ -2,6 +2,11 @@
 
 Based on [NJsonSchema](http://njsonschema.org) (see also: [NSwag](http://nswag.org)).
 
+##Please See Example
+
+
+
+
 ## Sample
 
 ```csharp

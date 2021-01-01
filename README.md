@@ -2,12 +2,12 @@
 
 Based on [NJsonSchema](http://njsonschema.org) (see also: [NSwag](http://nswag.org)).
 
-##Please See Example
-
-
 
 
 ## Sample
+
+Please See Example Directory 
+
 
 ```csharp
     public class ChatHub : AppHubBase<IChatClient> , IHuB

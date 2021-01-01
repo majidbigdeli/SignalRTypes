@@ -102,3 +102,120 @@ in Configure
 
             services.AddSignalRTypes<ISignalRTypesBuilder>();
 ```
+
+# Result
+
+return is json in open api 3
+
+```json
+{
+"SignalrType": "1.0.0",
+"info": {
+"title": "SignalrType specification",
+"termsOfService": null,
+"version": "1.0.0"
+},
+"hubs": {
+"ChatHub": {
+"name": "Chat",
+"operations": {
+"StartWorkAsync": {
+"parameters": {
+"message": {
+"$ref": "#/definitions/StartWorkVm"
+}
+}
+},
+"StopWork": {
+"parameters": {
+"message": {
+"$ref": "#/definitions/StopWorkVm"
+}
+}
+},
+"StopWork2": {
+"parameters": {
+"message": {
+"type": "string"
+}
+}
+}
+},
+"callbacks": {
+"hello": {
+"parameters": {}
+},
+"startwork": {
+"parameters": {
+"message": {
+"$ref": "#/definitions/StartWorkVm"
+}
+}
+},
+"stopwork": {
+"parameters": {
+"message": {
+"$ref": "#/definitions/StopWorkVm"
+}
+}
+}
+}
+}
+},
+"definitions": {
+"StartWorkVm": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"jobType",
+"firstName",
+"lastName"
+],
+"properties": {
+"jobType": {
+"$ref": "#/definitions/JobType"
+},
+"firstName": {
+"type": "string",
+"maxLength": 100,
+"minLength": 1
+},
+"lastName": {
+"type": "string",
+"maxLength": 200,
+"minLength": 1
+},
+"birthDate": {
+"type": "string",
+"format": "date-time"
+}
+}
+},
+"JobType": {
+"type": "string",
+"x-enumNames": [
+"Programer",
+"Manager"
+],
+"enum": [
+"Programer",
+"Manager"
+]
+},
+"StopWorkVm": {
+"type": "object",
+"additionalProperties": false,
+"properties": {
+"date": {
+"type": "string",
+"format": "date-time"
+},
+"description": {
+"type": "string",
+"x-nullable": true
+}
+}
+}
+}
+}
+```
